@@ -1,0 +1,32 @@
+{
+  "name": "polymarket",
+  "version": "0.1.0",
+  "description": "OpenClaw skill adapter for polymarket-cli",
+  "entrypoint": "openclaw-polymarket-skill execute --action {action} --params '{params}' --context '{context}'",
+  "bridge_entrypoint": "openclaw-polymarket-skill serve-stdio",
+  "bridge_protocol": "json-per-line",
+  "actions": [
+    "markets_search",
+    "markets_get",
+    "markets_list",
+    "events_list",
+    "events_get",
+    "clob_book",
+    "clob_midpoint",
+    "clob_spread",
+    "clob_price",
+    "clob_price_history",
+    "clob_balance",
+    "clob_orders",
+    "clob_order",
+    "clob_create_order",
+    "clob_market_order",
+    "clob_cancel",
+    "clob_cancel_orders",
+    "clob_cancel_all",
+    "data_positions",
+    "data_value",
+    "data_trades",
+    "data_leaderboard"
+  ]
+}

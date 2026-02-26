@@ -1,0 +1,61 @@
+{
+  "markets_search": {
+    "type": "object",
+    "required": ["query"],
+    "properties": {
+      "query": { "type": "string", "minLength": 1, "maxLength": 200 },
+      "limit": { "type": "integer", "minimum": 1, "maximum": 100, "default": 10 }
+    }
+  },
+  "markets_get": {
+    "type": "object",
+    "required": ["id_or_slug"],
+    "properties": {
+      "id_or_slug": { "type": "string", "minLength": 1, "maxLength": 200 }
+    }
+  },
+  "clob_book": {
+    "type": "object",
+    "required": ["token_id"],
+    "properties": {
+      "token_id": { "type": "string", "pattern": "^[0-9]{1,100}$" }
+    }
+  },
+  "clob_balance": {
+    "type": "object",
+    "required": ["asset_type"],
+    "properties": {
+      "asset_type": { "type": "string", "enum": ["collateral", "conditional"] },
+      "token": { "type": "string", "pattern": "^[0-9]{1,100}$" }
+    }
+  },
+  "clob_create_order": {
+    "type": "object",
+    "required": ["token", "side", "price", "size"],
+    "properties": {
+      "token": { "type": "string", "pattern": "^[0-9]{1,100}$" },
+      "side": { "type": "string", "enum": ["buy", "sell"] },
+      "price": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)?$" },
+      "size": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)?$" },
+      "order_type": { "type": "string", "enum": ["GTC", "FOK", "GTD", "FAK"], "default": "GTC" },
+      "post_only": { "type": "boolean", "default": false }
+    }
+  },
+  "clob_market_order": {
+    "type": "object",
+    "required": ["token", "side", "amount"],
+    "properties": {
+      "token": { "type": "string", "pattern": "^[0-9]{1,100}$" },
+      "side": { "type": "string", "enum": ["buy", "sell"] },
+      "amount": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)?$" },
+      "order_type": { "type": "string", "enum": ["FOK", "FAK"], "default": "FOK" }
+    }
+  },
+  "clob_cancel": {
+    "type": "object",
+    "required": ["order_id"],
+    "properties": {
+      "order_id": { "type": "string", "pattern": "^[0-9a-zA-Z_-]{1,128}$" }
+    }
+  }
+}

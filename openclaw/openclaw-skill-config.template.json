@@ -1,0 +1,33 @@
+{
+  "skills": [
+    {
+      "name": "polymarket",
+      "description": "Polymarket skill via polymarket-cli bridge",
+      "type": "stdio_bridge",
+      "command": "openclaw-polymarket-skill",
+      "args": ["serve-stdio"],
+      "cwd": "/ABSOLUTE/PATH/TO/openclaw-polymarket-skill",
+      "env": {
+        "OPENCLAW_PM_BIN": "polymarket",
+        "OPENCLAW_PM_CLI_VERSION": "0.1.4",
+        "OPENCLAW_PM_ENFORCE_VERSION": "true",
+        "OPENCLAW_PM_ALLOW_TRADING": "false",
+        "OPENCLAW_PM_DRY_RUN": "true",
+        "OPENCLAW_PM_MAX_AUTO_AMOUNT": "10",
+        "POLYMARKET_PRIVATE_KEY": "__PLACEHOLDER__",
+        "POLYMARKET_SIGNATURE_TYPE": "proxy"
+      },
+      "protocol": {
+        "input": "json-per-line",
+        "output": "json-per-line",
+        "request_schema": {
+          "id": "string|number|null",
+          "method": "execute|list_actions|healthcheck",
+          "action": "required when method=execute",
+          "params": "object",
+          "context": "object"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{"id":"1","method":"healthcheck"}
+{"id":"2","method":"list_actions"}
+{"id":"3","method":"execute","action":"markets_search","params":{"query":"bitcoin","limit":5},"context":{}}
+{"id":"4","method":"execute","action":"markets_get","params":{"id_or_slug":"will-trump-win-the-2024-election"},"context":{}}
+{"id":"5","method":"execute","action":"clob_book","params":{"token_id":"48331043336612883"},"context":{}}
+{"id":"6","method":"execute","action":"clob_create_order","params":{"token":"48331043336612883","side":"buy","price":"0.50","size":"10"},"context":{"wallet_id":"user-1","private_key":"__PLACEHOLDER__"}}
