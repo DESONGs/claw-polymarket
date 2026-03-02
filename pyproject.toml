@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "openclaw-polymarket-skill"
-version = "0.1.0"
+version = "0.2.0"
 description = "OpenClaw skill adapter for polymarket-cli"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -13,7 +13,12 @@ license = { text = "MIT" }
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0.0"]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.12.0"
+]
 
 [project.scripts]
 openclaw-polymarket-skill = "openclaw_polymarket_skill.cli:main"
