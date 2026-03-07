@@ -4,13 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "openclaw-polymarket-skill"
-version = "0.2.0"
+version = "0.3.1"
 description = "OpenClaw skill adapter for polymarket-cli"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [{ name = "OpenClaw Skill Team" }]
 license = { text = "MIT" }
-dependencies = []
+dependencies = [
+    "anthropic>=0.37.0",
+]
 
 [project.optional-dependencies]
 dev = [

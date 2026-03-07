@@ -3,11 +3,17 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import time
 from typing import Any
 
 from .actions import ACTION_REGISTRY
+from .analyze_models import AnalysisResult
+from .claude_client import ClaudeClient
+from .market_collector import MarketCollector
 from .openclaw_bridge import serve_stdio
+from .report_builder import OutputFormat, build_output
 from .runner import PolymarketSkillRunner
+from .settings import SkillSettings
 
 
 def _parse_json(value: str, name: str) -> dict[str, Any]:
@@ -56,6 +62,32 @@ def _run_list_actions() -> int:
     return 0
 
 
+async def _run_analyze(args: argparse.Namespace) -> int:
+    settings = SkillSettings.from_env()
+
+    if not settings.anthropic_api_key:
+        print(
+            json.dumps(
+                {"ok": False, "error": "ANTHROPIC_API_KEY 未配置，analyze 命令需要 Claude API key"},
+                ensure_ascii=False,
+            )
+        )
+        return 2
+
+    market_limit: int = getattr(args, "market_limit", 5)
+    output_fmt: OutputFormat = getattr(args, "output", "both")
+
+    collector = MarketCollector(settings=settings)
+    snapshot = await collector.collect(args.query, market_limit=market_limit)
+
+    claude = ClaudeClient(settings=settings)
+    result = claude.analyze(snapshot, args.analysis_prompt)
+
+    output = build_output(result, fmt=output_fmt)
+    print(output)
+    return 0 if result.ok else 1
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(prog="openclaw-polymarket-skill", description="OpenClaw Polymarket Skill")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -74,6 +106,18 @@ def main() -> None:
 
     bridge = sub.add_parser("serve-stdio", help="以 stdio bridge 模式运行，供 OpenClaw 直接调用")
     bridge.set_defaults(handler=lambda _: asyncio.run(serve_stdio()) or 0)
+
+    analyze = sub.add_parser("analyze", help="一键采集市场数据并调用 Claude 进行 AI 分析")
+    analyze.add_argument("--query", required=True, help="搜索关键词")
+    analyze.add_argument("--analysis-prompt", required=True, dest="analysis_prompt", help="分析提示词（传给 Claude）")
+    analyze.add_argument("--market-limit", type=int, default=5, dest="market_limit", help="最多分析的市场数量（默认 5）")
+    analyze.add_argument(
+        "--output",
+        choices=["json", "markdown", "both"],
+        default="both",
+        help="输出格式（默认 both）",
+    )
+    analyze.set_defaults(handler=lambda ns: asyncio.run(_run_analyze(ns)))
 
     args = parser.parse_args()
     exit_code = args.handler(args)

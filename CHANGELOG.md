@@ -5,6 +5,65 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2026-03-07
+
+### Fixed
+- 🐛 **修复**: `validators.py` 中 `TOKEN_ID_RE` 正则表达式仅允许纯数字，导致 `markets_search` 返回的十六进制 `clobTokenIds`（`0x...` 格式）无法传入 `clob_midpoint` / `clob_spread` / `clob_book` 等 CLOB action
+  - 修复前：`TOKEN_ID_RE = re.compile(r"^[0-9]{1,100}$")`
+  - 修复后：`TOKEN_ID_RE = re.compile(r"^([0-9]{1,100}|0x[0-9a-fA-F]{1,64})$")`
+  - 与 `polymarket-cli` 底层 `U256::from_str()` 实际行为对齐（同时支持十进制和十六进制）
+
+## [0.3.0] - 2026-03-06
+
+### Added
+- ✨ **新功能**: 端到端市场分析工作流 (`analyze` 子命令)
+  - 一键编排多个现有 action，采集完整市场数据（盘口/价差/委托簿/历史价格）
+  - 调用 Claude API 进行 AI 深度分析，支持自定义分析提示词
+  - 输出结构化 JSON 数据 + Markdown 分析报告
+
+- ✨ **新功能**: `analyze_models.py` — 分析工作流专用数据类
+  - `TokenData`: 单个 token 的行情数据
+  - `MarketSnapshot`: 查询结果快照（含精简摘要方法 `to_summary_dict()`）
+  - `AnalysisResult`: 完整分析结果（含 `to_dict()` 序列化）
+
+- ✨ **新功能**: `market_collector.py` — 并行市场数据采集
+  - `asyncio.gather` 并行采集每个 market 的 midpoint/spread/book/history
+  - 单 token 失败记录到 `fetch_errors`，不中断整体流程
+  - events_list 失败不阻塞主流程
+
+- ✨ **新功能**: `claude_client.py` — Claude API 封装
+  - 固定 system prompt，设定专业预测市场分析师角色
+  - 要求严格返回 `structured` + `report_markdown` 两个顶层键
+  - 三级降级策略：直接解析 → 提取 JSON 块 → 原始文本
+
+- ✨ **新功能**: `report_builder.py` — 多格式输出构建
+  - 支持 `json` / `markdown` / `both` 三种输出格式
+  - 无 `report_markdown` 时自动生成 fallback Markdown 报告
+
+- 🔧 **配置**: `settings.py` 新增 3 个 Claude 字段（带默认值，向后兼容）
+  - `anthropic_api_key` — 读取 `ANTHROPIC_API_KEY`
+  - `claude_timeout_seconds` — 读取 `OPENCLAW_CLAUDE_TIMEOUT`（默认 60）
+  - `claude_max_tokens` — 读取 `OPENCLAW_CLAUDE_MAX_TOKENS`（默认 4096）
+
+- 📦 **依赖**: 添加 `anthropic>=0.37.0`
+
+- 📄 **模板**: `.env.openclaw.template` 补充 Claude 相关环境变量说明
+
+### Usage
+
+```bash
+# 基本用法
+openclaw-polymarket-skill analyze \
+  --query "bitcoin price prediction" \
+  --analysis-prompt "从做市商视角分析买卖价差和流动性风险" \
+  --market-limit 5 \
+  --output both
+
+# 无 API key 时退出码为 2
+unset ANTHROPIC_API_KEY && openclaw-polymarket-skill analyze --query "test" --analysis-prompt "test"
+echo $?  # 输出 2
+```
+
 ## [0.2.0] - 2026-03-02
 
 ### Added
@@ -77,5 +136,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 命令执行器
 - 参数验证
 
+[0.3.1]: https://github.com/DESONGs/claw-polymarket/compare/v0.3.0...v0.3.1
+[0.3.0]: https://github.com/DESONGs/claw-polymarket/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/DESONGs/claw-polymarket/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/DESONGs/claw-polymarket/releases/tag/v0.1.0
