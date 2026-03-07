@@ -16,6 +16,9 @@ class SkillSettings:
     write_timeout_seconds: int = 60
     cli_version: str = "0.1.4"
     enforce_cli_version: bool = True
+    anthropic_api_key: str = ""
+    claude_timeout_seconds: int = 60
+    claude_max_tokens: int = 4096
 
     @staticmethod
     def from_env() -> "SkillSettings":
@@ -30,4 +33,7 @@ class SkillSettings:
             write_timeout_seconds=int(os.getenv("OPENCLAW_PM_WRITE_TIMEOUT_SECONDS", "60")),
             cli_version=os.getenv("OPENCLAW_PM_CLI_VERSION", "0.1.4"),
             enforce_cli_version=os.getenv("OPENCLAW_PM_ENFORCE_VERSION", "true").lower() == "true",
+            anthropic_api_key=os.getenv("ANTHROPIC_API_KEY", ""),
+            claude_timeout_seconds=int(os.getenv("OPENCLAW_CLAUDE_TIMEOUT", "60")),
+            claude_max_tokens=int(os.getenv("OPENCLAW_CLAUDE_MAX_TOKENS", "4096")),
         )

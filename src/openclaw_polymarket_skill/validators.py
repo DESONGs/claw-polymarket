@@ -4,7 +4,7 @@ import re
 from typing import Any
 
 
-TOKEN_ID_RE = re.compile(r"^[0-9]{1,100}$")
+TOKEN_ID_RE = re.compile(r"^([0-9]{1,100}|0x[0-9a-fA-F]{1,64})$")
 CONDITION_ID_RE = re.compile(r"^0x[0-9a-fA-F]{64}$")
 ADDRESS_RE = re.compile(r"^0x[0-9a-fA-F]{40}$")
 ORDER_ID_RE = re.compile(r"^[0-9a-zA-Z_-]{1,128}$")
