@@ -1,0 +1,23 @@
+{
+  "name": "@openclaw/findata-tools",
+  "version": "1.0.0",
+  "description": "Financial data tools plugin - Twitter, News, Polymarket as native OpenClaw tools",
+  "type": "module",
+  "openclaw": {
+    "extensions": [
+      "./index.ts"
+    ]
+  },
+  "keywords": [
+    "openclaw",
+    "plugin",
+    "findata",
+    "twitter",
+    "news",
+    "polymarket",
+    "openbb",
+    "stocks",
+    "economy"
+  ],
+  "license": "MIT"
+}

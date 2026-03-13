@@ -1,0 +1,18 @@
+{
+  "id": "findata-tools",
+  "uiHints": {
+    "enabled": {
+      "label": "Enable Financial Data Tools (Twitter, News, Polymarket)"
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "default": true
+      }
+    }
+  }
+}
